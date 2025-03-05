@@ -3,3 +3,7 @@ joblib
 datetime
 pycountry
 pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
