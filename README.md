@@ -1,2 +1,4 @@
 # s1_Timon_Weidemann
 First Exercise using Streamlit for a Hotel Booking App
+
+From the dataset I have extracted two target variables: room price (“adr”) and cancellation (“is_canceled”). With the help of various features that constitute the information used in a hotel booking, one can predict these two variables for a given booking. This is why this tool is intended to be used by a hotel employee, to check whether a certain booking they have received is likely to being cancelled and what price they can charge the person for the specific booking. With the help of the cancellation indicator, the hotel can optimize their occupancy, e.g. by double booking room a room when it’s likely that a customer will cancel. With the help of the pricing indicator, the hotel can optimize their yield management, e.g. by making sure they always set a fair price which the customer is willing to pay.
