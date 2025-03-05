@@ -191,7 +191,7 @@ if submitted:
                 st.write("100%")
 
             # Create metric to compare prediction to average
-            st.metric(label="Current Prediction", value=f"{cancellation_proba_out:.2f}%", delta=f"{(average_cancellation_proba - cancellation_proba_out):.2f}% vs avg.")
+            st.metric(label="Current Prediction", value=f"{cancellation_proba_out:.2f}%", delta=f"{(cancellation_proba_out - average_cancellation_proba):.2f}% vs avg.", delta_color="inverse)
             st.write(f"Average Cancellation Rate: **{average_cancellation_proba:.2f}%**")
         
         with outer_col2:
