@@ -213,15 +213,15 @@ def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation
 
     # Cancellation probability
     pdf.cell(100, 8, f"Cancellation Probability:", ln=False)
-    pdf.cell(0, 8, f"{cancellation_proba:.2f}%", ln=True)
+    pdf.cell(0, 8, f"{cancellation_proba_out:.2f}%", ln=True)
     pdf.cell(100, 8, f"Average Cancellation Probability:", ln=False)
-    pdf.cell(0, 8, f"{avg_cancel:.2f}%", ln=True)
+    pdf.cell(0, 8, f"{average_cancellation_proba:.2f}%", ln=True)
     pdf.ln(4)
 
     # Cancellation insight box
-    is_positive_cancel = "Lower" in cancel_insight
+    is_positive_cancel = "lower" in cancellation_insight.lower()
     pdf.set_fill_color(200, 230, 201) if is_positive_cancel else pdf.set_fill_color(255, 205, 210)
-    pdf.multi_cell(0, 10, cancel_insight, border=1, fill=True)
+    pdf.multi_cell(0, 10, cancellation_insight, border=1, fill=True)
     pdf.ln(3)
 
     # Initiate Cancellation section
@@ -233,15 +233,15 @@ def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation
 
     # Predicted price
     pdf.cell(100, 8, f"Predicted Price:", ln=False)
-    pdf.cell(0, 8, f"${predicted_price:.2f}", ln=True)
+    pdf.cell(0, 8, f"${predicted_pricing:.2f}", ln=True)
     pdf.cell(100, 8, f"Average Price:", ln=False)
-    pdf.cell(0, 8, f"${avg_price:.2f}", ln=True)
+    pdf.cell(0, 8, f"${average_price:.2f}", ln=True)
     pdf.ln(10)
 
     # Price insight box
-    is_positive_price = "above" in price_insight.lower()
+    is_positive_price = "above" in pricing_insight.lower()
     pdf.set_fill_color(200, 230, 201) if is_positive_price else pdf.set_fill_color(255, 205, 210)
-    pdf.multi_cell(0, 10, price_insight, border=1, fill=True)
+    pdf.multi_cell(0, 10, pricing_insight, border=1, fill=True)
 
     # Output to bytes buffer
     return io.BytesIO(pdf.output(dest="S").encode("latin1"))
