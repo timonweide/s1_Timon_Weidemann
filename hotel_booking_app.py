@@ -6,49 +6,6 @@ import pandas as pd
 from fpdf import FPDF
 import io
 
-# Add custom CSS
-st.markdown("""
-    <style>
-        html, body, .stApp {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        }
-
-        .stMarkdown, .css-18e3th9 {
-            color: var(--text-color);
-            font-weight: bold;
-        }
-
-        .stButton > button {
-            width: 100%;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .stButton > button:hover {
-            background-color: #45a049;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            html, body, .stApp {
-                background-color: #1E1E1E !important;
-                color: #FFFFFF !important;
-            }
-            .stButton > button {
-                background-color: #5A9;
-                color: black;
-            }
-            .stButton > button:hover {
-                background-color: #4A8;
-            }
-        }
-    </style>
-""", unsafe_allow_html=True)
 
 # Initialize Streamlit app
 st.title("Hotel Booking App")
