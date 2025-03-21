@@ -3,6 +3,8 @@ import joblib
 import datetime
 import pycountry
 import pandas as pd
+from fpdf import FPDF
+import io
 
 # Add custom CSS
 st.markdown("""
@@ -167,6 +169,30 @@ if "prediction_history" not in st.session_state:
     st.session_state.prediction_history = pd.DataFrame()
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+# Create function to export prediction PDF
+def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price, cancellation_insight, pricing_insight):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=16)
+    pdf.cell(200, 10, "Hotel Booking Prediction Report", ln=True, align='C')
+    pdf.set_font("Arial", size=12)
+    pdf.ln(10)
+
+    # Add predictions as content
+    pdf.cell(200, 10, f"Cancellation Probability: {cancellation_proba_out:.2f}%", ln=True)
+    pdf.cell(200, 10, f"Average Cancellation Probability: {average_cancellation_proba:.2f}%", ln=True)
+    pdf.ln(5)
+    pdf.cell(200, 10, f"Predicted Price: ${predicted_pricing:.2f}", ln=True)
+    pdf.cell(200, 10, f"Average Price: ${average_price:.2f}", ln=True)
+    pdf.ln(10)
+
+    # Add insights as content
+    pdf.cell(200, 10, cancellation_insight, ln=True)
+    pdf.ln(5)
+    pdf.cell(200, 10, pricing_insight, ln=True)
+    
+    return io.BytesIO(pdf.output(dest="S").encode("latin1"))
+
 # Calculate predictions
 if submitted:
 
@@ -237,13 +263,26 @@ if submitted:
         st.subheader("Insights")
 
         if cancellation_proba_out > average_cancellation_proba:
-            st.warning("Higher than average cancellation risk.")
+            cancellation_insight = "Higher than average cancellation risk."
+            st.warning(cancellation_insight)
         else:
-            st.success("Lower than average cancellation risk.")
+            cancellation_insight = "Lower than average cancellation risk."
+            st.success(cancellation_insight)
         if predicted_pricing > average_price:
-            st.success("Price is above average.")
+            pricing_insight = "Price is above average."
+            st.success(pricing_insight)
         else:
-            st.warning("Price is below average.")
+            pricing_insight = "Price is below average."
+            st.warning(cancellation_insight)
+
+        # Add PDF download button
+        pdf_bytes = generate_prediction_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price, cancellation_insight, pricing_insight)
+        st.download_button(
+            label="Download Predictions PDF",
+            data=pdf_bytes,
+            file_name="predictions_report.pdf",
+            mime="application/pdf"
+        )
     
     # Create raw prediction input tab
     with tab2:
