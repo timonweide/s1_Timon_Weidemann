@@ -4,6 +4,31 @@ import datetime
 import pycountry
 import pandas as pd
 
+# Add custom CSS
+st.markdown("""
+    <style>
+        body {
+            background-color: #f0f2f6;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        .css-18e3th9 {
+            color: #2E4053;
+            font-weight: bold;
+        }
+        .stButton > button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .stButton > button:hover {
+            background-color: #45a049;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # Initialize Streamlit app
 st.title("Hotel Booking App")
@@ -100,9 +125,6 @@ with st.sidebar.form("hotel_booking_form"):
 
     # Submit form
     submitted = st.form_submit_button("Generate Predictions")
-
-    # Custom CSS injection to make buttons go over full side width
-    st.markdown("<style>.stButton > button {width: 100%;}</style>", unsafe_allow_html=True)
 
 
 ### Input Dataframe
