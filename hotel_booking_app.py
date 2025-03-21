@@ -148,29 +148,6 @@ timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price, cancellation_insight, pricing_insight):
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=16)
-    pdf.cell(200, 10, "Hotel Booking Prediction Report", ln=True, align='C')
-    pdf.set_font("Arial", size=12)
-    pdf.ln(10)
-
-    # Add predictions as content
-    pdf.cell(200, 10, f"Cancellation Probability: {cancellation_proba_out:.2f}%", ln=True)
-    pdf.cell(200, 10, f"Average Cancellation Probability: {average_cancellation_proba:.2f}%", ln=True)
-    pdf.ln(5)
-    pdf.cell(200, 10, f"Predicted Price: ${predicted_pricing:.2f}", ln=True)
-    pdf.cell(200, 10, f"Average Price: ${average_price:.2f}", ln=True)
-    pdf.ln(10)
-
-    # Add insights as content
-    pdf.cell(200, 10, cancellation_insight, ln=True)
-    pdf.ln(5)
-    pdf.cell(200, 10, pricing_insight, ln=True)
-    
-    return io.BytesIO(pdf.output(dest="S").encode("latin1"))
-
-def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price, cancellation_insight, pricing_insight):
-    pdf = FPDF()
-    pdf.add_page()
 
     # Title bar
     pdf.set_fill_color(63, 81, 181)
