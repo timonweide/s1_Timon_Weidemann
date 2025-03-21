@@ -276,7 +276,7 @@ if submitted:
             st.warning(cancellation_insight)
 
         # Add PDF download button
-        pdf_bytes = generate_prediction_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price, cancellation_insight, pricing_insight)
+        pdf_bytes = generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price, cancellation_insight, pricing_insight)
         st.download_button(
             label="Download Predictions PDF",
             data=pdf_bytes,
