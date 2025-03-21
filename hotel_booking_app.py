@@ -145,7 +145,7 @@ if "prediction_history" not in st.session_state:
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # Create function to export prediction PDF
-def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price, cancellation_insight, pricing_insight):
+def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price):
     pdf = FPDF()
     pdf.add_page()
 
@@ -171,9 +171,12 @@ def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation
     pdf.ln(4)
 
     # Cancellation insight box
-    is_positive_cancel = "lower" in cancellation_insight.lower()
-    pdf.set_fill_color(200, 230, 201) if is_positive_cancel else pdf.set_fill_color(255, 205, 210)
-    pdf.multi_cell(0, 10, cancellation_insight, border=1, fill=True)
+    if cancellation_proba_out > average_cancellation_proba:
+        pdf.set_fill_color(255, 205, 210)
+        pdf.multi_cell(0, 10, "Higher than average cancellation risk.", border=1, fill=True)
+    else:
+        pdf.set_fill_color(200, 230, 201)
+        pdf.multi_cell(0, 10, "Lower than average cancellation risk.", border=1, fill=True)
     pdf.ln(3)
 
     # Initiate Cancellation section
@@ -191,9 +194,13 @@ def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation
     pdf.ln(10)
 
     # Price insight box
-    is_positive_price = "above" in pricing_insight.lower()
-    pdf.set_fill_color(200, 230, 201) if is_positive_price else pdf.set_fill_color(255, 205, 210)
-    pdf.multi_cell(0, 10, pricing_insight, border=1, fill=True)
+    if predicted_pricing < average_price:
+        pdf.set_fill_color(255, 205, 210)
+        pdf.multi_cell(0, 10, "Price is below average.", border=1, fill=True)
+    else:
+        pdf.set_fill_color(200, 230, 201)
+        pdf.multi_cell(0, 10, "Price is above average.", border=1, fill=True)
+    pdf.ln(3)
 
     # Output to bytes buffer
     return io.BytesIO(pdf.output(dest="S").encode("latin1"))
@@ -267,25 +274,18 @@ if submitted:
 
         # Create actionable insights
         st.subheader("Insights")
-        
-        cancellation_insight = "No data available."
-        pricing_insight = "No data available."
 
         if cancellation_proba_out > average_cancellation_proba:
-            cancellation_insight = "Higher than average cancellation risk."
-            st.warning(cancellation_insight)
+            st.warning("Higher than average cancellation risk.")
         else:
-            cancellation_insight = "Lower than average cancellation risk."
-            st.success(cancellation_insight)
+            st.success("Lower than average cancellation risk.")
         if predicted_pricing > average_price:
-            pricing_insight = "Price is above average."
-            st.success(pricing_insight)
+            st.success("Price is above average.")
         else:
-            pricing_insight = "Price is below average."
-            st.warning(pricing_insight)
+            st.warning("Price is below average.")
 
         # Add PDF download button
-        pdf_bytes = generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price, cancellation_insight, pricing_insight)
+        pdf_bytes = generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price)
         st.download_button(
             label="Download Predictions PDF",
             data=pdf_bytes,
