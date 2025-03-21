@@ -290,7 +290,8 @@ if submitted:
             label="Download Predictions PDF",
             data=pdf_bytes,
             file_name="predictions_report.pdf",
-            mime="application/pdf"
+            mime="application/pdf",
+            key="pdf_download"
         )
     
     # Create raw prediction input tab
