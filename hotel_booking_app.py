@@ -193,6 +193,60 @@ def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation
     
     return io.BytesIO(pdf.output(dest="S").encode("latin1"))
 
+def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price, cancellation_insight, pricing_insight):
+    pdf = FPDF()
+    pdf.add_page()
+
+    # Title bar
+    pdf.set_fill_color(63, 81, 181)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font('Arial', 'B', 16)
+    pdf.cell(0, 12, 'Hotel Booking Prediction Report', ln=True, align='C', fill=True)
+    pdf.ln(8)
+
+    # Initiate Cancellation section
+    pdf.set_text_color(0)
+    pdf.set_font('Arial', 'B', 14)
+    pdf.cell(0, 10, 'Cancellation Prediction', ln=True)
+    pdf.set_font('Arial', '', 12)
+    pdf.ln(2)
+
+    # Cancellation probability
+    pdf.cell(100, 8, f"Cancellation Probability:", ln=False)
+    pdf.cell(0, 8, f"{cancellation_proba:.2f}%", ln=True)
+    pdf.cell(100, 8, f"Average Cancellation Probability:", ln=False)
+    pdf.cell(0, 8, f"{avg_cancel:.2f}%", ln=True)
+    pdf.ln(4)
+
+    # Cancellation insight box
+    is_positive_cancel = "Lower" in cancel_insight
+    pdf.set_fill_color(200, 230, 201) if is_positive_cancel else pdf.set_fill_color(255, 205, 210)
+    pdf.multi_cell(0, 10, cancel_insight, border=1, fill=True)
+    pdf.ln(3)
+
+    # Initiate Cancellation section
+    pdf.set_text_color(0)
+    pdf.set_font('Arial', 'B', 14)
+    pdf.cell(0, 10, 'Price Prediction', ln=True)
+    pdf.set_font('Arial', '', 12)
+    pdf.ln(2)
+
+    # Predicted price
+    pdf.cell(100, 8, f"Predicted Price:", ln=False)
+    pdf.cell(0, 8, f"${predicted_price:.2f}", ln=True)
+    pdf.cell(100, 8, f"Average Price:", ln=False)
+    pdf.cell(0, 8, f"${avg_price:.2f}", ln=True)
+    pdf.ln(10)
+
+    # Price insight box
+    is_positive_price = "above" in price_insight.lower()
+    pdf.set_fill_color(200, 230, 201) if is_positive_price else pdf.set_fill_color(255, 205, 210)
+    pdf.multi_cell(0, 10, price_insight, border=1, fill=True)
+
+    # Output to bytes buffer
+    return io.BytesIO(pdf.output(dest="S").encode("latin1"))
+
+
 # Calculate predictions
 if submitted:
 
@@ -273,7 +327,7 @@ if submitted:
             st.success(pricing_insight)
         else:
             pricing_insight = "Price is below average."
-            st.warning(cancellation_insight)
+            st.warning(pricing_insight)
 
         # Add PDF download button
         pdf_bytes = generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price, cancellation_insight, pricing_insight)
