@@ -10,7 +10,6 @@ import io
 ### Initialize Streamlit app
 
 # Set page configuration
-st.set_option('logger.level', 'error')
 st.set_page_config(
     page_title="Hotel Booking App",
     page_icon="🏨",
@@ -114,6 +113,25 @@ with st.sidebar.form("hotel_booking_form"):
     # Submit form
     submitted = st.form_submit_button("Generate Predictions")
 
+# Create functions to efficiently load models
+@st.cache_resource
+def load_cancellation_model():
+    return joblib.load("cancellation.pkl")
+
+@st.cache_resource
+def load_pricing_model():
+    return joblib.load("pricing.pkl")
+
+# Load models
+if 'cancellation_model' not in st.session_state:
+    msg = st.toast("Loading cancellation model...", icon="🔄")
+    st.session_state.cancellation_model = load_cancellation_model()
+    msg.toast("Cancellation model loaded successfully!", icon="✅")
+if 'pricing_model' not in st.session_state:
+    msg = st.toast("Loading pricing model...", icon="🔄")
+    st.session_state.pricing_model = load_pricing_model()
+    msg.toast("Pricing model loaded successfully!", icon="✅")
+
 
 ### Input Dataframe
 
@@ -154,25 +172,6 @@ input_data = pd.DataFrame({
 if "prediction_history" not in st.session_state:
     st.session_state.prediction_history = pd.DataFrame()
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-# Create functions to efficiently load models
-@st.cache_resource
-def load_cancellation_model():
-    return joblib.load("cancellation.pkl")
-
-@st.cache_resource
-def load_pricing_model():
-    return joblib.load("pricing.pkl")
-
-# Load models
-if 'cancellation_model' not in st.session_state:
-    msg = st.toast("Loading cancellation model...", icon="🔄")
-    st.session_state.cancellation_model = load_cancellation_model()
-    msg.toast("Cancellation model loaded successfully!", icon="✅")
-if 'pricing_model' not in st.session_state:
-    msg = st.toast("Loading pricing model...", icon="🔄")
-    st.session_state.pricing_model = load_pricing_model()
-    msg.toast("Pricing model loaded successfully!", icon="✅")
 
 # Create function to export prediction PDF
 def generate_pdf(cancellation_proba_out, predicted_pricing, average_cancellation_proba, average_price):
