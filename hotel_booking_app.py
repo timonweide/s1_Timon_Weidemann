@@ -22,25 +22,6 @@ st.title("Hotel Booking App")
 st.write("This app can predict the chance of cancellation and the expected price for a hotel customer upon entry of their details in the siderbar to the left.")
 st.write("This app is intended to be used by professionals in the hotel industry during room booking to provide actionable insights on customer behaviour.")
 
-# Create functions to efficiently load models
-@st.cache_resource
-def load_cancellation_model():
-    return joblib.load("cancellation.pkl")
-
-@st.cache_resource
-def load_pricing_model():
-    return joblib.load("pricing.pkl")
-
-# Load models
-if 'cancellation_model' not in st.session_state:
-    msg = st.toast("Loading cancellation model...", icon="🔄")
-    st.session_state.cancellation_model = load_cancellation_model()
-    msg.toast("Cancellation model loaded successfully!", icon="✅")
-if 'pricing_model' not in st.session_state:
-    msg = st.toast("Loading pricing model...", icon="🔄")
-    st.session_state.pricing_model = load_pricing_model()
-    msg.toast("Pricing model loaded successfully!", icon="✅")
-
 
 ### Input Fields
 
@@ -131,6 +112,25 @@ with st.sidebar.form("hotel_booking_form"):
 
     # Submit form
     submitted = st.form_submit_button("Generate Predictions")
+
+# Create functions to efficiently load models
+@st.cache_resource
+def load_cancellation_model():
+    return joblib.load("cancellation.pkl")
+
+@st.cache_resource
+def load_pricing_model():
+    return joblib.load("pricing.pkl")
+
+# Load models
+if 'cancellation_model' not in st.session_state:
+    msg = st.toast("Loading cancellation model...", icon="🔄")
+    st.session_state.cancellation_model = load_cancellation_model()
+    msg.toast("Cancellation model loaded successfully!", icon="✅")
+if 'pricing_model' not in st.session_state:
+    msg = st.toast("Loading pricing model...", icon="🔄")
+    st.session_state.pricing_model = load_pricing_model()
+    msg.toast("Pricing model loaded successfully!", icon="✅")
 
 
 ### Input Dataframe
@@ -243,7 +243,7 @@ if submitted:
 
         # Check if models are already loaded in session state
         if st.session_state.cancellation_model and st.session_state.pricing_model:
-            st.success("Models loaded successfully!")
+            st.info("Models loaded successfully!")
 
             # Predict cancellation probability (using the previously trained & loaded classifier)
             st.write("Predicting Cancellation Probability...")
