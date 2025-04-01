@@ -7,6 +7,27 @@ from fpdf import FPDF
 import io
 
 
+### Initialize Streamlit app
+
+# Create functions to efficiently load models
+@st.cache_resource
+def load_cancellation_model():
+    return joblib.load("cancellation.pkl")
+
+@st.cache_resource
+def load_pricing_model():
+    return joblib.load("pricing.pkl")
+
+# Load models
+if 'cancellation_model' not in st.session_state:
+    msg = st.toast("Loading cancellation model...", icon="🔄")
+    st.session_state.cancellation_model = load_cancellation_model()
+    msg.toast("Cancellation model loaded successfully!", icon="✅")
+if 'pricing_model' not in st.session_state:
+    msg = st.toast("Loading pricing model...", icon="🔄")
+    st.session_state.pricing_model = load_pricing_model()
+    msg.toast("Pricing model loaded successfully!", icon="✅")
+
 # Set page configuration
 st.set_page_config(
     page_title="Hotel Booking App",
@@ -15,7 +36,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Initialize Streamlit app
+# Set title and description
 st.title("Hotel Booking App")
 st.write("This app can predict the chance of cancellation and the expected price for a hotel customer upon entry of their details in the siderbar to the left.")
 st.write("This app is intended to be used by professionals in the hotel industry during room booking to provide actionable insights on customer behaviour.")
@@ -220,24 +241,24 @@ if submitted:
     # Create status tracking
     with st.status("Generating Predictions..."):
 
-        # Load the pre-trained models
-        if 'cancellation_model' not in st.session_state or 'pricing_model' not in st.session_state:
-            st.write("Loading Models...")
-            st.session_state.cancellation_model = joblib.load("cancellation.pkl")
-            st.session_state.pricing_model = joblib.load("pricing.pkl")
-        else:
-            st.write("Loading Models... already loaded!")
+        # Check if models are already loaded in session state
+        if st.session_state.cancellation_model and st.session_state.pricing_model:
+            st.success("Models loaded successfully!")
 
-        # Predict cancellation probability (using the previously trained & loaded classifier)
-        st.write("Predicting Cancellation Probability...")
-        cancellation_proba = st.session_state.cancellation_model.predict_proba(input_data)[0][1]
-        cancellation_proba_out = cancellation_proba * 100
-        average_cancellation_proba = 37.0416  # From streamlit_model_full.ipynb
-        
-        # Predict price (using the previously trained & loaded regressor)
-        st.write("Predicting Price...")
-        predicted_pricing = st.session_state.pricing_model.predict(input_data)[0]
-        average_price = 101.831122  # From streamlit_model_full.ipynb
+            # Predict cancellation probability (using the previously trained & loaded classifier)
+            st.write("Predicting Cancellation Probability...")
+            cancellation_proba = st.session_state.cancellation_model.predict_proba(input_data)[0][1]
+            cancellation_proba_out = cancellation_proba * 100
+            average_cancellation_proba = 37.0416  # From streamlit_model_full.ipynb
+            st.success("Cancellation probability calculated successfully!")
+            
+            # Predict price (using the previously trained & loaded regressor)
+            st.write("Predicting Price...")
+            predicted_pricing = st.session_state.pricing_model.predict(input_data)[0]
+            average_price = 101.831122  # From streamlit_model_full.ipynb
+            st.success("Price prediction calculated successfully!")
+        else:
+            st.error("Models are not loaded. Please restart the application.")
 
     # Create tabs to order output
     tab1, tab2, tab3 = st.tabs(["Predictions", "Input Data", "Historic Predictions"])
