@@ -10,13 +10,13 @@ import io
 ### Initialize Streamlit app
 
 # Set page configuration
+st.set_option('logger.level', 'error')
 st.set_page_config(
     page_title="Hotel Booking App",
     page_icon="🏨",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-st.set_option('logger.level', 'error')
 
 # Set title and description
 st.title("Hotel Booking App")
