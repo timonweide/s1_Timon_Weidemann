@@ -16,6 +16,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+st.set_option('logger.level', 'error')
 
 # Set title and description
 st.title("Hotel Booking App")
