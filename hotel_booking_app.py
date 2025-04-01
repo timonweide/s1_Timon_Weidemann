@@ -7,6 +7,14 @@ from fpdf import FPDF
 import io
 
 
+# Set page configuration
+st.set_page_config(
+    page_title="Hotel Booking App",
+    page_icon="🏨",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 # Initialize Streamlit app
 st.title("Hotel Booking App")
 st.write("This app can predict the chance of cancellation and the expected price for a hotel customer upon entry of their details in the siderbar to the left.")
